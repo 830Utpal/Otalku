@@ -6,15 +6,31 @@ datasource db {
 
 // Define custom output path for generated Prisma Client
 generator client {
-  provider = "prisma-client-js"
-  output   = "/app/generated/prisma-client"
+  provider        = "prisma-client-js"
+  output          = "/app/generated/prisma-client"
   previewFeatures = ["fullTextSearch"]
 }
 
-// Example data model
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  name      String?
+  id           String     @id
+  username     String     @unique
+  displayName  String
+  email        String?    @unique
+  passwordHash String?
+  googleId     String?    @unique
+  avatarUrl    String?
+  bio          String?
+  sessions     Session[]
+  createdAt    DateTime   @default(now())
+
+  @@map("users")
+}
+
+model Session {
+  id         String   @id
+  userId     String
+  expiresAt  DateTime
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
