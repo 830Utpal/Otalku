@@ -30,7 +30,7 @@ model Session {
   id         String   @id @default(uuid())       // ✅ Add uuid default
   userId     String
   expiresAt  DateTime
-  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
