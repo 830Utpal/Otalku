@@ -7,6 +7,11 @@ import SignUpForm from "./SignUpForm";
 export const metadata: Metadata = {
   title: "Sign Up",
 };
+console.time("signup-process");
+
+// your signup logic
+
+
 
 export default function Page() {
   return (
@@ -36,3 +41,4 @@ export default function Page() {
     </main>
   );
 }
+console.timeEnd("signup-process");

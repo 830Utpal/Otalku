@@ -1,0 +1,36 @@
+// Define database connection via the `DATABASE_URL` env var
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define custom output path for generated Prisma Client
+generator client {
+  provider        = "prisma-client-js"
+  output          = "./generated/prisma-client" // ✅ FIX: Relative path (not absolute)
+  previewFeatures = ["fullTextSearch"]
+}
+
+model User {
+  id           String    @id @default(uuid()) // ✅ Add uuid default
+  username     String    @unique
+  displayName  String
+  email        String?   @unique
+  passwordHash String?
+  googleId     String?   @unique
+  avatarUrl    String?
+  bio          String?
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid()) // ✅ Add uuid default
+  userId    String
+  expiresAt DateTime
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}

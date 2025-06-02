@@ -7,12 +7,12 @@ datasource db {
 // Define custom output path for generated Prisma Client
 generator client {
   provider        = "prisma-client-js"
-  output          = "/app/generated/prisma-client"
+  output          = "./generated/prisma-client" // ✅ FIX: Relative path (not absolute)
   previewFeatures = ["fullTextSearch"]
 }
 
 model User {
-  id           String     @id
+  id           String     @id @default(uuid())   // ✅ Add uuid default
   username     String     @unique
   displayName  String
   email        String?    @unique
@@ -27,7 +27,7 @@ model User {
 }
 
 model Session {
-  id         String   @id
+  id         String   @id @default(uuid())       // ✅ Add uuid default
   userId     String
   expiresAt  DateTime
   User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
