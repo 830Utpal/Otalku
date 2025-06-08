@@ -7,12 +7,13 @@ datasource db {
 // Define custom output path for generated Prisma Client
 generator client {
   provider        = "prisma-client-js"
-  output          = "./generated/prisma-client" // ✅ FIX: Relative path (not absolute)
+  output          = "./generated/prisma-client" // ✅ FIX: Relative path
   previewFeatures = ["fullTextSearch"]
 }
 
+// User model
 model User {
-  id           String     @id @default(uuid())   // ✅ Add uuid default
+  id           String     @id @default(uuid())        // ✅ UUID primary key
   username     String     @unique
   displayName  String
   email        String?    @unique
@@ -20,17 +21,30 @@ model User {
   googleId     String?    @unique
   avatarUrl    String?
   bio          String?
-  sessions     Session[]
+  sessions     Session[]                           // ✅ Relation to sessions
+  posts        Post[]                              // ✅ Back relation to posts
   createdAt    DateTime   @default(now())
 
   @@map("users")
 }
 
+// Session model
 model Session {
-  id         String   @id @default(uuid())       // ✅ Add uuid default
+  id         String   @id @default(uuid())
   userId     String
   expiresAt  DateTime
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+// Post model
+model Post {
+  id        String   @id @default(cuid())            // cuid() or uuid() both valid
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("posts")
 }
